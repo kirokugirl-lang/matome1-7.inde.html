@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暮らしの計算・比較ツール</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f6f8;
+  color: #333;
+  font-family: sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #ffffff;
+  padding: 24px 18px 20px;
+}
+
+header {
+  text-align: center;
+  padding: 25px 10px 30px;
+}
+
+header h1 {
+  font-size: 22px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+  color: #333;
+}
+
+header p {
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+  line-height: 1.7;
+}
+
+.section-title {
+  font-size: 17px;
+  margin: 10px 0 15px;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.category-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 19px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.category-card:active {
+  background: #f3f6f9;
+  transform: scale(0.99);
+}
+
+.category-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.category-description {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+.arrow {
+  font-size: 20px;
+  color: #aaa;
+  margin-left: 10px;
+}
+
+.tool-page {
+  display: none;
+}
+
+.tool-page.active {
+  display: block;
+}
+
+.back-button {
+  border: none;
+  background: #f1f3f5;
+  color: #444;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.tool-page h2 {
+  font-size: 20px;
+  margin: 0 0 8px;
+}
+
+.tool-description {
+  color: #888;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.tool-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tool-link {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  background: #fff;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.tool-link:active {
+  background: #f3f6f9;
+}
+
+.tool-link span {
+  float: right;
+  color: #aaa;
+  font-weight: normal;
+}
+
+footer {
+  margin-top: 40px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  font-size: 11px;
+  color: #888;
+  line-height: 1.8;
+}
+
+footer p {
+  margin: 0 0 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>暮らしの計算・比較ツール</h1>
+    <p>日々のちょっとした計算や比較にご利用ください。</p>
+  </header>
+
+  <!-- カテゴリー一覧 -->
+  <div id="home">
+
+    <h2 class="section-title">カテゴリー一覧</h2>
+
+    <div class="category-list" id="categoryList"></div>
+
+  </div>
+
+  <!-- カテゴリー内のツール一覧 -->
+  <div id="toolPage" class="tool-page">
+
+    <button class="back-button" onclick="goHome()">
+      ← カテゴリー一覧に戻る
+    </button>
+
+    <h2 id="categoryTitle"></h2>
+
+    <p class="tool-description" id="categoryDescription"></p>
+
+    <div class="tool-list" id="toolList"></div>
+
+  </div>
+
+  <!-- 免責事項 -->
+  <footer>
+    <p>
+      ※当サイトの計算結果は、参考情報としてご利用ください。
+      実際の金額・価格等を保証するものではありません。
+    </p>
+
+    <p>
+      ※計算結果や掲載情報の利用により生じた損失・損害等については、
+      責任を負いかねますので、あらかじめご了承ください。
+    </p>
+  </footer>
+
+</div>
+
+<script>
+
+// =================================
+// カテゴリーとツールの登録
+// 今後追加するときはここを編集する
+// =================================
+
+const categories = [
+
+  {
+    name: "💰 お金・金利",
+    description: "お金に関する計算ツール",
+    tools: [
+      {
+        name: "普通預金金利シミュレーション",
+        url: "https://two026-11-17kinri.onrender.com/"
+      }
+    ]
+  },
+
+  {
+    name: "🧻 日用品の比較",
+    description: "日用品の価格・内容量を比較",
+    tools: [
+      {
+        name: "ボックスティッシュ比較",
+        url: "https://index-html-sf8q.onrender.com/"
+      },
+      {
+        name: "トイレットペーパー比較",
+        url: "https://tp-index-html.onrender.com/"
+      },
+      {
+        name: "洗剤比較（ml単位）",
+        url: "https://szmlindex-html.onrender.com/"
+      },
+      {
+        name: "洗剤比較（g単位）",
+        url: "https://szg-index-html.onrender.com/"
+      }
+    ]
+  },
+
+  {
+    name: "🐶 ペット用品の比較",
+    description: "ペット用品の価格・内容量を比較",
+    tools: [
+      {
+        name: "ペットシーツ比較",
+        url: "https://ps-index-html.onrender.com/"
+      },
+      {
+        name: "ドッグフード比較",
+        url: "https://dfg-index-html.onrender.com/"
+      }
+    ]
+  }
+
+];
+
+// =================================
+// カテゴリーを画面に表示
+// =================================
+
+function showCategories() {
+
+  const list = document.getElementById("categoryList");
+  list.innerHTML = "";
+
+  categories.forEach((category, index) => {
+
+    const card = document.createElement("div");
+    card.className = "category-card";
+
+    card.innerHTML = `
+      <div>
+        <div class="category-name">${category.name}</div>
+        <div class="category-description">${category.description}</div>
+      </div>
+      <div class="arrow">›</div>
+    `;
+
+    card.onclick = () => openCategory(index);
+
+    list.appendChild(card);
+
+  });
+
+}
+
+// =================================
+// カテゴリーを開く
+// =================================
+
+function openCategory(index) {
+
+  const category = categories[index];
+
+  document.getElementById("home").style.display = "none";
+  document.getElementById("toolPage").classList.add("active");
+
+  document.getElementById("categoryTitle").textContent =
+    category.name;
+
+  document.getElementById("categoryDescription").textContent =
+    category.description;
+
+  const list = document.getElementById("toolList");
+  list.innerHTML = "";
+
+  category.tools.forEach(tool => {
+
+    const link = document.createElement("a");
+
+    link.className = "tool-link";
+    link.href = tool.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+
+    link.innerHTML = `
+      ${tool.name}
+      <span>›</span>
+    `;
+
+    list.appendChild(link);
+
+  });
+
+  window.scrollTo(0, 0);
+
+}
+
+// =================================
+// カテゴリー一覧に戻る
+// =================================
+
+function goHome() {
+
+  document.getElementById("toolPage").classList.remove("active");
+  document.getElementById("home").style.display = "block";
+
+  window.scrollTo(0, 0);
+
+}
+
+// 最初にカテゴリー一覧を表示
+showCategories();
+
+</script>
+
+</body>
+</html>
